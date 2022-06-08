@@ -1,0 +1,7 @@
+- hosts: localhost
+  connection: local
+  tasks:
+    - name: "Criando dois pods, load balancer e rodando imagem Docker"
+      shell: |
+        kubectl apply -f /mnt/c/Insper/6-Semestre/CompNuvem/Projeto/Tentativa3/k8s/app.yaml
+        

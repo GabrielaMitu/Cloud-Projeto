@@ -1,0 +1,67 @@
+# simple deployment
+# Comando no cmd: kubectl apply -f C:\Insper\6-Semestre\CompNuvem\Projeto\Tentativa3\k8s\app.yaml
+
+# node
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gabimitu
+  labels:
+    app: gabimitu
+spec: 
+  replicas: 2
+  selector: 
+    matchLabels:
+      app: gabimitu
+  template: 
+    metadata: 
+      labels:
+        app: gabimitu
+    spec:
+      containers:
+      - name: pods 
+        image: gabimitu/teste 
+        ports:
+        - containerPort: 80
+        # Autoscalling habilitado
+        resources:
+          limits:
+            cpu: 500m
+          requests:
+            cpu: 200m
+
+---
+# criação do private load balancer
+apiVersion: v1
+kind: Service
+metadata:
+  name: gabimitu-service-internal
+  annotations: 
+    service.beta.kubernetes.io/aws-load-balancer-type: nbl
+    service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: 'true'
+    service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
+spec: 
+  selector:
+    app: gabimitu
+  type: LoadBalancer
+  ports: 
+    - protocol: TCP
+      port: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gabimitu-service-external
+  annotations: 
+     service.beta.kubernetes.io/aws-load-balancer-type: nbl
+     service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: 'true'
+spec:
+  selector: 
+    app: gabimitu
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 80

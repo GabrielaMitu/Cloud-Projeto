@@ -3,5 +3,6 @@
   tasks:
     - name: "Criando dois pods, load balancer e rodando imagem Docker"
       shell: |
+        aws eks --region us-east-1 update-kubeconfig --name eksMitu --profile terraform
         kubectl apply -f /mnt/c/Insper/6-Semestre/CompNuvem/Projeto/Tentativa3/k8s/app.yaml
         
